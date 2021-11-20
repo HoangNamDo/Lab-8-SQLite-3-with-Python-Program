@@ -13,7 +13,7 @@ cursor.execute("DROP TABLE IF EXISTS user;")
 
 # create the table if it doesn't already exist
 # note that primary keys are automatically created in sqlit3 and referenced as rowid 
-cursor.execute("CREATE TABLE user (first_name TEXT, last_name TEXT, email TEXT)")
+cursor.execute("CREATE TABLE user (first_name TEXT, last_name TEXT, email TEXT, phone_number TEXT, street_address TEXT, city TEXT, state TEXT, zipcode TEXT)")
 
 # create some records of data
 cursor.execute("INSERT INTO user VALUES (\"Tony\", \"Stark\", \"ironman@stark.com\")")
