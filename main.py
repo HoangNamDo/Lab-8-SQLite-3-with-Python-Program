@@ -1,37 +1,29 @@
 # import the sqlite3 database module
 import sqlite3
 
-print("SQLite Practice - Example User Table\n")
-# create a connection to the database file
-conn = sqlite3.connect("myDatabase.db")
+def setup_database():
+    # create the table if it doesn't already exist
+    # note that primary keys are automatically created in sqlit3 and referenced as rowid 
+    cursor.execute("CREATE TABLE IF NOT EXISTS user (first_name TEXT, last_name TEXT, email TEXT, phone_number TEXT, street_address TEXT, city TEXT, state TEXT, zipcode TEXT)")
 
-# create a cursor that we will use to move through the database 
-cursor = conn.cursor()
+    # create some records of data
+    cursor.execute("INSERT INTO user VALUES (\"Tony\", \"Stark\", \"ironman@avengers.com\", \"324-557-9685\", \"200 Park Avenue\", \"New York\", \"NY\", \"10166\")")
+    cursor.execute("INSERT INTO user VALUES (\"Carol\", \"Danvers\", \"captainmarvel@avengers.com\", \"201-422-7560\", \"3716 Liberty Ave\", \"North Bergen\", \"NJ\", \"07047\")")
 
-# create the table if it doesn't already exist
-# note that primary keys are automatically created in sqlit3 and referenced as rowid 
-cursor.execute("CREATE TABLE IF NOT EXISTS user (first_name TEXT, last_name TEXT, email TEXT, phone_number TEXT, street_address TEXT, city TEXT, state TEXT, zipcode TEXT)")
+def list_contact_info():
+    # query the table including the rowid primary key value
+    cursor.execute("SELECT rowid, first_name, last_name, email, phone_number, street_address, city, state, zipcode FROM user")
 
-# create some records of data
-cursor.execute("INSERT INTO user VALUES (\"Tony\", \"Stark\", \"ironman@avengers.com\", \"324-557-9685\", \"200 Park Avenue\", \"New York\", \"NY\", \"10166\")")
-cursor.execute("INSERT INTO user VALUES (\"Carol\", \"Danvers\", \"captainmarvel@avengers.com\", \"201-422-7560\", \"3716 Liberty Ave\", \"North Bergen\", \"NJ\", \"07047\")")
+    # store the results of a the query to a list called users
+    users = cursor.fetchall()
 
-# query the table including the rowid primary key value
-cursor.execute("SELECT rowid, first_name, last_name, email, phone_number, street_address, city, state, zipcode FROM user")
+    # now we can loop through the results of the query
+    for this_user in users:
+      print(this_user[0], this_user[1], this_user[2], this_user[3], this_user[4], this_user[5], this_user[6], this_user[7], this_user[8])
 
-# store the results of a the query to a list called users
-users = cursor.fetchall()
+def list_names(user):
+    print("All NAMES in the USER table")
 
-
-# now we can loop through the results of the query
-for this_user in users:
-  print(this_user[0], this_user[1], this_user[2], this_user[3], this_user[4], this_user[5], this_user[6], this_user[7], this_user[8])
-
-# save the updates to the database - if you don't commit any updates/inserts to the database will not be saved
-conn.commit()
-
-# close the connection
-conn.close()
 
 
 def display_menu():
@@ -45,23 +37,36 @@ def display_menu():
     print("5 - Exit the program")
 
 def main():
-    display_menu()
+
+    print("SQLite Practice - Example User Table\n")
+    # create a connection to the database file
+    conn = sqlite3.connect("myDatabase.db")
+
+    # create a cursor that we will use to move through the database 
+    cursor = conn.cursor()
     while True:
+        display_menu()
         print()
         command = input("Command: ").lower()
         if command == "1":
-            list_names(user)
+            list_names()
         elif command == "2":
-            add_edit_book(book_catalog, mode="add")
-        elif command == "edit":
-            add_edit_book(book_catalog, mode="edit")
-        elif command == "del":
-            delete_book(book_catalog)
-        elif command == "exit":
+            list_contact_info()
+        elif command == "3":
+            list_location()
+        elif command == "4":
+            add_user()
+        elif command == "5":
             print("Bye!")
             break
         else:
             print("Unknown command. Please try again.")
+    # save the updates to the database - if you don't commit any updates/inserts to the database will not be saved
+    conn.commit()
+    # close the connection
+    conn.close()
+    # farewell message
+    print("Thank you for using our Marvel database.")
 
 if __name__ == "__main__":
     main()
