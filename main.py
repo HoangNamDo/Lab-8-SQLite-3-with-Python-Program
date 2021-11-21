@@ -86,9 +86,9 @@ def add_new_superhero(conn):
         VALUE (?,?,?,?,?,?,?,?)
         """
 
-    cursor.execute(sql, (input_first_name, input_last_name, input_alias, input_species, input_citizenship, input_birth_year, input_status, input_portrayed_by)
+    cursor.execute(sql, (input_first_name, input_last_name, input_alias, input_species, input_citizenship, input_birth_year, input_status, input_portrayed_by))
 
-    print()
+    print("Superhero added. Thank you!")
 
 
 def display_menu():
