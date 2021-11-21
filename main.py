@@ -10,31 +10,44 @@ def setup_database(conn):
     # create some records of data
     cursor.execute("INSERT INTO user VALUES (\"Tony\", \"Stark\", \"Iron Man\", \"Human\", \"American\", \"1970\", \"Deceased\", \"Robert Downey, Jr.\")")
     cursor.execute("INSERT INTO user VALUES (\"Carol\", \"Danvers\", \"Captain Marvel\", \"Human/Kree Hybrid\", \"American/Kree Imperial (formerly)\", \"1964\", \"Alive\", \"Brie Larson\")")
+    cursor.execute("INSERT INTO user VALUES (\"Sersi\", \"N/A\", \"N/A\", \"Eternal\", \"British\", \"Before 5000 BC\", \"Alive\", \"Gemma Chan\")")
 
-def list_contact_info(conn):
-    cursor = conn.cursor()
-    # query the table including the rowid primary key value
-    cursor.execute("SELECT rowid, first_name, last_name, email, phone_number, street_address, city, state, zipcode FROM user")
-
-    # store the results of a the query to a list called users
-    users = cursor.fetchall()
-
-    # now we can loop through the results of the query
-    for this_user in users:
-      print(this_user[0], this_user[1], this_user[2], this_user[3], this_user[4], this_user[5], this_user[6], this_user[7], this_user[8])
-
-def list_names(conn):
+def list_name_alias(conn):
     cursor = conn.cursor()
     print("All NAMES in the USER table")
     # query the table including the rowid primary key value
-    cursor.execute("SELECT rowid, first_name, last_name, email, phone_number, street_address, city, state, zipcode FROM user")
+    cursor.execute("SELECT rowid, first_name, last_name, alias FROM user")
 
     # store the results of a the query to a list called users
     users = cursor.fetchall()
 
     # now we can loop through the results of the query
-    for this_user in users:
-      print(this_user[0], this_user[1], this_user[2], this_user[3], this_user[4], this_user[5], this_user[6], this_user[7], this_user[8])
+    for this_superhero in users:
+      print(this_superhero[0], this_superhero[1], this_superhero[2])
+
+def list_species_citizenship_birth_year(conn):
+    cursor = conn.cursor()
+    # query the table including the rowid primary key value
+    cursor.execute("SELECT rowid, species, citizenship, birth_year FROM superheroes")
+
+    # store the results of a the query to a list called users
+    superheroes = cursor.fetchall()
+
+    # now we can loop through the results of the query
+    for this_superhero in superheroes:
+      print(this_superhero[0], this_superhero[3], this_superhero[4], this_superhero[5])
+
+def list_species_citizenship_birth_year(conn):
+    cursor = conn.cursor()
+    # query the table including the rowid primary key value
+    cursor.execute("SELECT rowid, species, citizenship, birth_year FROM superheroes")
+
+    # store the results of a the query to a list called users
+    superheroes = cursor.fetchall()
+
+    # now we can loop through the results of the query
+    for this_superhero in superheroes:
+      print(this_superhero[0], this_superhero[3], this_superhero[4], this_superhero[5])
 
 def add_new_superhero():
     print("Add new superhero\n")
@@ -45,17 +58,16 @@ def add_new_superhero():
 
 
 def display_menu():
-    print("Welcome to the MARVEL Universe database\n")
-    print("* * * MENU * * *")
-    print("COMMAND MENU")
-    print("1 - List superhero's names")
-    print("2 - List superhero's names, email and phone number")
-    print("3 - List NAMES and city/state for all users")
-    print("4 - Add new User")
-    print("5 - Exit the program")
+    print("Welcome to MCU Superheroes Database\n")
+    print("* * * COMMAND MENU * * *")
+    print("1 - List superheroes' first name, last name, and alias")
+    print("2 - List superheroes' species and citizenship")
+    print("3 - List superheroes' birth year and status")
+    print("4 - List actors/actresses whom superhero portrayed by")
+    print("5 - Add new superhero to the database")
+    print("6 - Exit the program")
 
 def main():
-
     print("SQLite Practice - Example User Table\n")
     # create a connection to the database file
     conn = sqlite3.connect("myDatabase.db")
