@@ -31,12 +31,12 @@ def list_species_and_citizenship(conn):
     # query the table including the rowid primary key value
     cursor.execute("SELECT rowid, species, citizenship FROM superheroes")
 
-    # store the results of a the query to a list called superheroess
+    # store the results of a the query to a list called superheroes
     superheroes = cursor.fetchall()
 
     # now we can loop through the results of the query
     for this_superhero in superheroes:
-      print(this_superhero[0], this_superhero[3], this_superhero[4])
+      print(this_superhero["rowid"], this_superhero["species"], this_superhero["citizenship"])
 
 def list_birth_year_and_status(conn):
     cursor = conn.cursor()
@@ -48,7 +48,7 @@ def list_birth_year_and_status(conn):
 
     # now we can loop through the results of the query
     for this_superhero in superheroes:
-      print(this_superhero[0], this_superhero[3], this_superhero[4], this_superhero[5])
+      print(this_superhero[0], this_superhero[1], this_superhero[2], this_superhero[3])
 
 def list_portrayed_by(conn):
     cursor = conn.cursor()
@@ -60,7 +60,7 @@ def list_portrayed_by(conn):
 
     # now we can loop through the results of the query
     for this_superhero in superheroes:
-      print(this_superhero[0], this_superhero[8])
+      print(this_superhero[0], this_superhero[1])
 
 def add_new_superhero(conn):
     
