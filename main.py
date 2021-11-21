@@ -1,16 +1,18 @@
 # import the sqlite3 database module
 import sqlite3
 
-def setup_database(cursor):
+def setup_database(conn):
+    cursor = conn.cursor()
     # create the table if it doesn't already exist
     # note that primary keys are automatically created in sqlit3 and referenced as rowid 
-    cursor.execute("CREATE TABLE IF NOT EXISTS user (first_name TEXT, last_name TEXT, email TEXT, phone_number TEXT, street_address TEXT, city TEXT, state TEXT, zipcode TEXT)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS user (first_name TEXT, last_name TEXT, alias TEXT, species TEXT, citizenship TEXT, birth_year TEXT, status TEXT, portrayed_by TEXT)")
 
     # create some records of data
-    cursor.execute("INSERT INTO user VALUES (\"Tony\", \"Stark\", \"ironman@avengers.com\", \"324-557-9685\", \"200 Park Avenue\", \"New York\", \"NY\", \"10166\")")
-    cursor.execute("INSERT INTO user VALUES (\"Carol\", \"Danvers\", \"captainmarvel@avengers.com\", \"201-422-7560\", \"3716 Liberty Ave\", \"North Bergen\", \"NJ\", \"07047\")")
+    cursor.execute("INSERT INTO user VALUES (\"Tony\", \"Stark\", \"Iron Man\", \"Human\", \"American\", \"1970\", \"Deceased\", \"Robert Downey, Jr.\")")
+    cursor.execute("INSERT INTO user VALUES (\"Carol\", \"Danvers\", \"Captain Marvel\", \"Human/Kree Hybrid\", \"American/Kree Imperial (formerly)\", \"1964\", \"Alive\", \"Brie Larson\")")
 
-def list_contact_info(cursor):
+def list_contact_info(conn):
+    cursor = conn.cursor()
     # query the table including the rowid primary key value
     cursor.execute("SELECT rowid, first_name, last_name, email, phone_number, street_address, city, state, zipcode FROM user")
 
@@ -21,9 +23,25 @@ def list_contact_info(cursor):
     for this_user in users:
       print(this_user[0], this_user[1], this_user[2], this_user[3], this_user[4], this_user[5], this_user[6], this_user[7], this_user[8])
 
-def list_names(user):
+def list_names(conn):
+    cursor = conn.cursor()
     print("All NAMES in the USER table")
+    # query the table including the rowid primary key value
+    cursor.execute("SELECT rowid, first_name, last_name, email, phone_number, street_address, city, state, zipcode FROM user")
 
+    # store the results of a the query to a list called users
+    users = cursor.fetchall()
+
+    # now we can loop through the results of the query
+    for this_user in users:
+      print(this_user[0], this_user[1], this_user[2], this_user[3], this_user[4], this_user[5], this_user[6], this_user[7], this_user[8])
+
+def add_new_superhero():
+    print("Add new superhero\n")
+    input_first_name = input("First name: ")
+    input_last_name = input("Last name: ")
+    input_alias = input("Alias: ")
+    input_birthyear = input("Birth year: ")
 
 
 def display_menu():
@@ -42,8 +60,8 @@ def main():
     # create a connection to the database file
     conn = sqlite3.connect("myDatabase.db")
     # create a cursor that we will use to move through the database 
-    cursor = conn.cursor()
-    setup_database(cursor)
+    # cursor = conn.cursor()
+    setup_database(conn)
     while True:
         display_menu()
         print()
@@ -51,11 +69,11 @@ def main():
         if command == "1":
             list_names()
         elif command == "2":
-            list_contact_info(cursor)
-        elif command == "3":
-            list_location()
-        elif command == "4":
-            add_user()
+            list_contact_info(conn)
+        # elif command == "3":
+        #     list_location()
+        # elif command == "4":
+        #     add_user()
         elif command == "5":
             break
         else:
