@@ -10,7 +10,7 @@ def setup_database(conn):
     # create some records of data
     cursor.execute("INSERT INTO superheroes VALUES ('Tony', 'Stark', 'Iron Man', 'Human', 'American', '1970', 'Deceased', 'Robert Downey, Jr.')")
     cursor.execute("INSERT INTO superheroes VALUES ('Carol', 'Danvers', 'Captain Marvel', 'Human/Kree Hybrid', 'American/Kree Imperial (formerly)', '1964', 'Alive', 'Brie Larson')")
-    cursor.execute("INSERT INTO superheroes VALUES ('Sersi', 'N/A', 'N/A', 'Eternal', 'British', 'Before 5000 BC', 'Alive', 'Gemma Chan')")
+    cursor.execute("INSERT INTO superheroes VALUES ('Sersi', '', 'N/A', 'Eternal', 'British', 'Before 5000 BC', 'Alive', 'Gemma Chan')")
     cursor.execute("INSERT INTO superheroes VALUES ('Shang-Chi', 'Xu', 'N/A', 'Human', 'Chinese (formerly)/American', '1999', 'Alive', 'Simu Liu')")
 
 def list_name_and_alias(conn):
@@ -63,13 +63,32 @@ def list_portrayed_by(conn):
       print(this_superhero[0], this_superhero[8])
 
 def add_new_superhero(conn):
+    
+    cursor = conn.cursor()
+
     print("Add new superhero\n")
-    print("If superhero doesn't have first name or last name, please leave it empty!")
-    print("If superhero doesn't have alias, please input 'N/A'!")
+    print("If you know that the superhero doesn't have either first name or last name, please leave it empty!")
+    print("If you know that the superhero doesn't possess any attributes (other than first name and last name), please input \"N/A\"!")
+    print("If you're not sure about any attributes (other than first name and last name), please input \"Not sure\"!")
+
     input_first_name = input("First name: ")
     input_last_name = input("Last name: ")
     input_alias = input("Alias: ")
-    input_birthyear = input("Birth year: ")
+    input_species = input("Species: ")
+    input_citizenship = input("Citizenship: ")
+    input_birth_year = input("Birth year: ")
+    input_status = input("Status: ")
+    input_portrayed_by = input("Portrayed by: ")
+
+    # prepare your insert statement using ? for each item that you will insert
+    sql = """"
+        INSERT INTO superheroes (first_name, last_name, alias, species, citizenship, birth_year, status, portrayed_by)
+        VALUE (?,?,?,?,?,?,?,?)
+        """
+
+    cursor.execute(sql, (input_first_name, input_last_name, input_alias, input_species, input_citizenship, input_birth_year, input_status, input_portrayed_by)
+
+    print()
 
 
 def display_menu():
