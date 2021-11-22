@@ -1,22 +1,23 @@
 # import the sqlite3 database module
 import sqlite3
-from contextlib import closing
 
-
-def setup_database(conn):
-    cursor = conn.cursor()
+def setup_database(conn, cursor):
     # create the table if it doesn't already exist
-    # note that primary keys are automatically created in sqlit3 and referenced as rowid 
+    # primary keys are automatically created in sqlit3 and referenced as rowid 
     cursor.execute("CREATE TABLE IF NOT EXISTS mcu_superheroes (first_name TEXT, last_name TEXT, alias TEXT, species TEXT, citizenship TEXT, birth_year TEXT, status TEXT, portrayed_by TEXT)")
 
-    # create some records of data
+    # create some initial records of data
     cursor.execute("INSERT INTO mcu_superheroes VALUES ('Tony', 'Stark', 'Iron Man', 'Human', 'American', '1970', 'Deceased', 'Robert Downey, Jr.')")
+
     cursor.execute("INSERT INTO mcu_superheroes VALUES ('Carol', 'Danvers', 'Captain Marvel', 'Human/Kree Hybrid', 'American / Kree Imperial (formerly)', '1964', 'Alive', 'Brie Larson')")
-    cursor.execute("INSERT INTO mcu_superheroes VALUES ('Sersi', '', 'N/A', 'Eternal', 'British', 'Before 5000 BC', 'Alive', 'Gemma Chan')")
+
+    cursor.execute("INSERT INTO mcu_superheroes VALUES ('Sersi', 'N/A', 'N/A', 'Eternal', 'British', 'Before 5000 BC', 'Alive', 'Gemma Chan')")
+
     cursor.execute("INSERT INTO mcu_superheroes VALUES ('Shang-Chi', 'Xu', 'N/A', 'Human', 'Chinese (formerly) / American', '1999', 'Alive', 'Simu Liu')")
 
-def list_name_and_alias(conn):
-    cursor = conn.cursor()
+    return cursor
+
+def list_name_and_alias(conn, cursor):
     print("Superheroes and their aliases")
     # query the table including the rowid primary key value
     cursor.execute("SELECT rowid, first_name, last_name, alias FROM mcu_superheroes")
@@ -24,54 +25,51 @@ def list_name_and_alias(conn):
     # store the results of a the query to a list called superheroess
     superheroes = cursor.fetchall()
 
-    # now we can loop through the results of the query
+    # loop through the results of the query
     for this_superhero in superheroes:
       print(this_superhero[0], this_superhero[1], this_superhero[2], this_superhero[3])
 
-def list_species_and_citizenship(conn):
-    print("Superheroes and their species and citizenship")
-    cursor = conn.cursor()
+def list_species_and_citizenship(conn, cursor):
+    print("Superheroes, their species and citizenship")
     # query the table including the rowid primary key value
     cursor.execute("SELECT rowid, first_name, last_name, species, citizenship FROM mcu_superheroes")
 
     # store the results of a the query to a list called superheroes
     superheroes = cursor.fetchall()
 
-    # now we can loop through the results of the query
+    # loop through the results of the query
     for this_superhero in superheroes:
       print(this_superhero[0], this_superhero[1], this_superhero[2], this_superhero[3], this_superhero[4])
 
-def list_birth_year_and_status(conn):
-    print("Superheroes and their birth year and status")
-    cursor = conn.cursor()
+def list_birth_year_and_status(conn, cursor):
+    print("Superheroes, their birth year and status")
     # query the table including the rowid primary key value
     cursor.execute("SELECT rowid, first_name, last_name, birth_year, status FROM mcu_superheroes")
 
     # store the results of a the query to a list called superheroess
     superheroes = cursor.fetchall()
 
-    # now we can loop through the results of the query
+    # loop through the results of the query
     for this_superhero in superheroes:
       print(this_superhero[0], this_superhero[1], this_superhero[2], this_superhero[3], this_superhero[4])
 
-def list_portrayed_by(conn):
+def list_portrayed_by(conn, cursor):
     print("Superheroes and the actors/actresses who portray them")
-    cursor = conn.cursor()
     # query the table including the rowid primary key value
     cursor.execute("SELECT rowid, first_name, last_name, portrayed_by FROM mcu_superheroes")
 
     # store the results of a the query to a list called superheroess
     superheroes = cursor.fetchall()
 
-    # now we can loop through the results of the query
+    # loop through the results of the query
     for this_superhero in superheroes:
       print(this_superhero[0], this_superhero[1], this_superhero[2], this_superhero[3])
 
-def add_new_superhero(conn):
+def add_new_superhero(conn, cursor):
     print("Let's add new MCU superhero to the database with some instructions below:\n")
-    print("If you know that the superhero doesn't have either first name or last name, \nplease leave it empty!")
-    print("If you know that the superhero doesn't possess any attributes \n(other than first name and last name), please input \"N/A\"!")
-    print("If you're not sure about any attributes \n(other than first name and last name), please input \"Not sure\"!")
+    print("If you know that the superhero doesn't possess any attributes, \nplease input \"N/A\"!")
+    print()
+    print("If you're not sure about any attributes, \nplease input \"Not sure\"!")
     print()
 
     cursor = conn.cursor()
@@ -86,22 +84,24 @@ def add_new_superhero(conn):
     input_portrayed_by = input("Portrayed by: ")
 
     # prepare your insert statement using ? for each item that you will insert
-    sql = """"
+    sql = """
         INSERT INTO mcu_superheroes (first_name, last_name, alias, species, citizenship, birth_year, status, portrayed_by)
-        VALUE (?,?,?,?,?,?,?,?)
+        VALUES (?,?,?,?,?,?,?,?)
         """
 
     cursor.execute(sql, (input_first_name, input_last_name, input_alias, input_species, input_citizenship, input_birth_year, input_status, input_portrayed_by))
 
-    print("Superhero added. Thank you!")
+    print(f"{input_first_name} {input_last_name} added. Thank you!")
+
+    return cursor
 
 
 def display_menu():
     print()
     print("* * * * * * * COMMAND MENU * * * * * * *")
     print("1 - List superheroes and their alias")
-    print("2 - List superheroes and their species and citizenship")
-    print("3 - List superheroes and their birth year and status")
+    print("2 - List superheroes, their species and citizenship")
+    print("3 - List superheroes, their birth year and status")
     print("4 - List superheroes and actors/actresses who portray them")
     print("5 - Add new superhero to the database")
     print("6 - Exit the program")
@@ -111,6 +111,8 @@ def main():
 
     # create a connection to the database file
     conn = sqlite3.connect("myDatabase.db")
+    # create a cursor that we will use to move through the database 
+    cursor = conn.cursor()
 
     setup_database(conn)
     while True:
@@ -118,22 +120,22 @@ def main():
         print()
         command = input("Command: ")
         print()
-        if command == "1":
-            list_name_and_alias(conn)
+        if command == "0":
+            cursor = setup_database(conn, cursor)
+        elif command == "1":
+            list_name_and_alias(conn, cursor)
         elif command == "2":
-            list_species_and_citizenship(conn)
+            list_species_and_citizenship(conn, cursor)
         elif command == "3":
-            list_birth_year_and_status(conn)
+            list_birth_year_and_status(conn, cursor)
         elif command == "4":
-            list_portrayed_by(conn)
+            list_portrayed_by(conn, cursor)
         elif command == "5":
-            add_new_superhero(conn)
+            cursor = add_new_superhero(conn, cursor)
         elif command == "6":
             break
         else:
             print("Unknown command. Please try again.")
-    # save the updates to the database - if you don't commit any updates/inserts to the database will not be saved
-    conn.commit()
     # close the connection
     conn.close()
     # farewell message
