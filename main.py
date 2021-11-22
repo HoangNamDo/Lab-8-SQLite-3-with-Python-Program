@@ -1,10 +1,13 @@
 # import the sqlite3 database module
 import sqlite3
 
-def setup_database(conn, cursor):
+def initialize_database(conn, cursor):
+    # check if the mcu_superheroes table already exists, if so, drop it so we can start with a new table
+    cursor.execute("DROP TABLE IF EXISTS mcu_superheroes;")
+
     # create the table if it doesn't already exist
     # primary keys are automatically created in sqlit3 and referenced as rowid 
-    cursor.execute("CREATE TABLE IF NOT EXISTS mcu_superheroes (first_name TEXT, last_name TEXT, alias TEXT, species TEXT, citizenship TEXT, birth_year TEXT, status TEXT, portrayed_by TEXT)")
+    cursor.execute("CREATE TABLE mcu_superheroes (first_name TEXT, last_name TEXT, alias TEXT, species TEXT, citizenship TEXT, birth_year TEXT, status TEXT, portrayed_by TEXT)")
 
     # create some initial records of data
     cursor.execute("INSERT INTO mcu_superheroes VALUES ('Tony', 'Stark', 'Iron Man', 'Human', 'American', '1970', 'Deceased', 'Robert Downey, Jr.')")
@@ -72,8 +75,6 @@ def add_new_superhero(conn, cursor):
     print("If you're not sure about any attributes, \nplease input \"Not sure\"!")
     print()
 
-    cursor = conn.cursor()
-
     input_first_name = input("First name: ")
     input_last_name = input("Last name: ")
     input_alias = input("Alias: ")
@@ -99,6 +100,7 @@ def add_new_superhero(conn, cursor):
 def display_menu():
     print()
     print("* * * * * * * COMMAND MENU * * * * * * *")
+    print("0 - Initialize/reset database. (Careful this will wipe all data of new added superheroes)")
     print("1 - List superheroes and their alias")
     print("2 - List superheroes, their species and citizenship")
     print("3 - List superheroes, their birth year and status")
@@ -113,15 +115,13 @@ def main():
     conn = sqlite3.connect("myDatabase.db")
     # create a cursor that we will use to move through the database 
     cursor = conn.cursor()
-
-    setup_database(conn)
     while True:
         display_menu()
         print()
         command = input("Command: ")
         print()
         if command == "0":
-            cursor = setup_database(conn, cursor)
+            cursor = initialize_database(conn, cursor)
         elif command == "1":
             list_name_and_alias(conn, cursor)
         elif command == "2":
