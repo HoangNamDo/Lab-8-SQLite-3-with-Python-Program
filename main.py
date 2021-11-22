@@ -14,7 +14,7 @@ def initialize_database(conn, cursor):
 
     cursor.execute("INSERT INTO mcu_superheroes VALUES ('Carol', 'Danvers', 'Captain Marvel', 'Human/Kree Hybrid', 'American / Kree Imperial (formerly)', '1964', 'Alive', 'Brie Larson')")
 
-    cursor.execute("INSERT INTO mcu_superheroes VALUES ('Sersi', 'N/A', 'N/A', 'Eternal', 'British', 'Before 5000 BC', 'Alive', 'Gemma Chan')")
+    cursor.execute("INSERT INTO mcu_superheroes VALUES ('Stephen', 'Strange', 'Doctor Strange', 'Human', 'American', '1982', 'Alive', 'Benedict Cumberbatch')")
 
     cursor.execute("INSERT INTO mcu_superheroes VALUES ('Shang-Chi', 'Xu', 'N/A', 'Human', 'Chinese (formerly) / American', '1999', 'Alive', 'Simu Liu')")
 
@@ -69,7 +69,7 @@ def list_portrayed_by(conn, cursor):
       print(this_superhero[0], this_superhero[1], this_superhero[2], this_superhero[3])
 
 def add_new_superhero(conn, cursor):
-    print("Let's add new MCU superhero to the database with some instructions below:\n")
+    print("Let's add new MCU superhero to the database following instructions below:\n")
     print("If you know that the superhero doesn't possess any attributes, \nplease input \"N/A\"!")
     print()
     print("If you're not sure about any attributes, \nplease input \"Not sure\"!")
@@ -110,7 +110,6 @@ def display_menu():
 
 def main():
     print("Welcome to MCU Superheroes Database")
-
     # create a connection to the database file
     conn = sqlite3.connect("myDatabase.db")
     # create a cursor that we will use to move through the database 
@@ -122,6 +121,7 @@ def main():
         print()
         if command == "0":
             cursor = initialize_database(conn, cursor)
+            print("Database reset successfully!")
         elif command == "1":
             list_name_and_alias(conn, cursor)
         elif command == "2":
@@ -136,6 +136,9 @@ def main():
             break
         else:
             print("Unknown command. Please try again.")
+
+    # save the updates/inserts to the database
+    conn.commit()
     # close the connection
     conn.close()
     # farewell message
